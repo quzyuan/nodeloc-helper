@@ -62,6 +62,8 @@ GOTIFY_TOKEN      = os.environ.get("GOTIFY_TOKEN")
 SC3_PUSH_KEY      = os.environ.get("SC3_PUSH_KEY")
 WECHAT_API_URL    = os.environ.get("WECHAT_API_URL")
 WECHAT_AUTH_TOKEN = os.environ.get("WECHAT_AUTH_TOKEN")
+BARK_URL          = os.environ.get("BARK_URL", "").strip().rstrip("/")
+BARK_SOUND        = os.environ.get("BARK_SOUND", "").strip()
 
 NODELOC_PROXY = (
     os.environ.get("NODELOC_PROXY")
@@ -141,6 +143,25 @@ def tg_notify(text: str):
             logger.warning(f"TG 推送失败 HTTP={r.status_code}")
     except Exception as e:
         logger.warning(f"TG 推送异常: {e}")
+
+
+def bark_notify(title: str, body: str):
+    """Bark 推送通知（iOS）——配置 BARK_URL 后生效"""
+    if not BARK_URL:
+        return
+    try:
+        from urllib.parse import quote
+        url = f"{BARK_URL}/{quote(title)}/{quote(body)}"
+        params = {"group": "NodeLoc"}
+        if BARK_SOUND:
+            params["sound"] = BARK_SOUND
+        r = requests.get(url, params=params, timeout=10, impersonate="chrome136")
+        if r.status_code == 200:
+            logger.success("✅ Bark 通知成功")
+        else:
+            logger.warning(f"Bark 推送失败 HTTP={r.status_code}")
+    except Exception as e:
+        logger.warning(f"Bark 推送异常: {e}")
 
 
 # ── 主类 ──────────────────────────────────────────────────────────────
@@ -531,6 +552,11 @@ class NodeLocUpgrade:
             except Exception as e:
                 logger.warning(f"微信通知失败: {e}")
 
+        bark_notify(
+            "NodeLoc 升级完成 ✅",
+            f"浏览:{self.stats['topics_browsed']} 点赞:{self.stats['likes_given']} 回复:{self.stats['replies_posted']}"
+        )
+
     # ── Run ───────────────────────────────────────────────────────────
     def run(self) -> int:
         try:
@@ -540,6 +566,7 @@ class NodeLocUpgrade:
 
             if not self.login():
                 tg_notify("NodeLoc: 登录失败 ❌")
+                bark_notify("NodeLoc 登录失败 ❌", "请检查用户名/密码或网络")
                 return 2
 
             self.do_checkin()
@@ -558,6 +585,7 @@ class NodeLocUpgrade:
             logger.error("NodeLoc: 脚本异常 ❌")
             traceback.print_exc()
             tg_notify("NodeLoc: 脚本异常 ❌")
+            bark_notify("NodeLoc 脚本异常 ❌", "请检查 GitHub Actions 日志")
             return 9
 
         finally:
