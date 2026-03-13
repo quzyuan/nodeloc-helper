@@ -561,7 +561,7 @@ class NodeLocUpgrade:
     def run(self) -> int:
         try:
             logger.info("=" * 50)
-            logger.info("==== NodeLoc 快速升级脚本 v4.0 开始 ====")
+            logger.info("==== NodeLoc 快速升级脚本 开始 ====")
             logger.info("=" * 50)
 
             if not self.login():
