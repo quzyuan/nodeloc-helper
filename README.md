@@ -30,7 +30,9 @@
 | `SC3_PUSH_KEY` | Server 酱³ SendKey | 可选 |
 | `WECHAT_API_URL` | 自定义微信 API | 可选 |
 | `WECHAT_AUTH_TOKEN` | 微信 API Token | 可选 |
+| `BARK_URL` | bark通知（https://api.day.app/你的DeviceKey） | 可选 |
 | `NODELOC_PROXY` | HTTP 代理（如需） | 可选 |
+
 
 ### 第二步：开启 Actions
 
