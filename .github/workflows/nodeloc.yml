@@ -8,15 +8,6 @@ on:
 
   # ── 允许在 GitHub 页面手动触发 ──
   workflow_dispatch:
-    inputs:
-      debug:
-        description: "开启 Debug 模式（上传调试截图）"
-        required: false
-        default: "false"
-        type: choice
-        options:
-          - "false"
-          - "true"
 
 # 强制使用 Node.js 24 运行 Actions，消除 Node.js 20 废弃警告
 env:
@@ -85,18 +76,6 @@ jobs:
           CHROMEDRIVER_PATH: ${{ steps.setup-chrome.outputs.chromedriver-path }}
 
           # -------- Debug 开关 --------
-          NODELOC_DEBUG:     ${{ github.event.inputs.debug || 'false' }}
+          NODELOC_DEBUG:     "false"
 
         run: python nodeloc_upgrade_selenium.py
-
-      # ── 6. 上传调试文件（仅 Debug 模式或脚本失败时）──
-      - name: 上传调试截图
-        if: ${{ failure() || github.event.inputs.debug == 'true' }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: nodeloc-debug-${{ github.run_number }}
-          path: |
-            debug/nodeloc_upgrade_debug.html
-            debug/nodeloc_upgrade_debug.png
-          if-no-files-found: ignore
-          retention-days: 7
