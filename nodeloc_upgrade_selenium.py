@@ -77,14 +77,14 @@ if NODELOC_PROXY:
 
 # ── 任务配置（可通过环境变量覆盖）───────────────────────────────────
 DAILY_TASKS = {
-    "topics_to_browse": int(os.environ.get("NL_TOPICS",  "30")),
-    "likes_to_give":    int(os.environ.get("NL_LIKES",   "15")),
-    "replies_to_post":  int(os.environ.get("NL_REPLIES", "5")),
+    "topics_to_browse": int(os.environ.get("NL_TOPICS",  "15")),
+    "likes_to_give":    int(os.environ.get("NL_LIKES",   "7")),
+    "replies_to_post":  int(os.environ.get("NL_REPLIES", "0")),
 }
 
 REPLY_TEMPLATES = [
     "感谢分享！给力",
-    "学习了，很有帮助",
+    "学习一下",
     "支持一下，值得学习",
     "不错的内容，Mark",
     "mark一下，下次再看",
@@ -486,16 +486,16 @@ class NodeLocUpgrade:
                         if self.like_post(post["post_id"]):
                             self.stats["likes_given"] += 1
                             logger.info(f"  👍 点赞 (总: {self.stats['likes_given']})")
-                            time.sleep(random.uniform(1.0, 2.5))
+                            time.sleep(random.uniform(180.0, 240.0))
 
                 # 回复（30% 概率，有回帖的话题才回）
                 if (self.stats["replies_posted"] < DAILY_TASKS["replies_to_post"]
                         and topic["reply_count"] > 0
                         and random.random() < 0.3):
                     self.reply_to_topic(tid, title)
-                    time.sleep(random.uniform(3.0, 6.0))
+                    time.sleep(random.uniform(180.0, 240.0))
 
-                time.sleep(random.uniform(3.0, 8.0))
+                time.sleep(random.uniform(180.0, 240.0))
 
             except Exception as e:
                 logger.warning(f"处理话题 {tid} 出错: {e}")
