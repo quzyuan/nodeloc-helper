@@ -486,16 +486,16 @@ class NodeLocUpgrade:
                         if self.like_post(post["post_id"]):
                             self.stats["likes_given"] += 1
                             logger.info(f"  👍 点赞 (总: {self.stats['likes_given']})")
-                            time.sleep(random.uniform(180.0, 240.0))
+                            time.sleep(random.uniform(5.0, 20.0))
 
                 # 回复（30% 概率，有回帖的话题才回）
                 if (self.stats["replies_posted"] < DAILY_TASKS["replies_to_post"]
                         and topic["reply_count"] > 0
                         and random.random() < 0.3):
                     self.reply_to_topic(tid, title)
-                    time.sleep(random.uniform(180.0, 240.0))
+                    time.sleep(random.uniform(5.0， 20.0))
 
-                time.sleep(random.uniform(180.0, 240.0))
+                time.sleep(random.uniform(5.0, 20.0))
 
             except Exception as e:
                 logger.warning(f"处理话题 {tid} 出错: {e}")
