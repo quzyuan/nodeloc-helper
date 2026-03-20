@@ -493,7 +493,7 @@ class NodeLocUpgrade:
                         and topic["reply_count"] > 0
                         and random.random() < 0.3):
                     self.reply_to_topic(tid, title)
-                    time.sleep(random.uniform(5.0， 20.0))
+                    time.sleep(random.uniform(5.0, 20.0))
 
                 time.sleep(random.uniform(5.0, 20.0))
 
